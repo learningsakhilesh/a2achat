@@ -1,4 +1,4 @@
-# Instagram Chat
+# A2AChat
 
 A real-time 2-person chat application with Instagram-like UI design.
 

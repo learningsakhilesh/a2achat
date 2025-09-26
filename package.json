@@ -1,7 +1,7 @@
 {
-  "name": "instagram-chat",
+  "name": "a2achat",
   "version": "1.0.0",
-  "description": "A 2-person chat webapp with Instagram-like UI",
+  "description": "A2AChat - A 2-person chat webapp with Instagram-like UI",
   "main": "server.js",
   "engines": {
     "node": ">=16.0.0"

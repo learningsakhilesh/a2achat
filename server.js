@@ -141,7 +141,7 @@ app.use((err, req, res, next) => {
 
 // Start server
 server.listen(PORT, () => {
-    console.log(`Instagram Chat Server running on port ${PORT}`);
+    console.log(`A2AChat Server running on port ${PORT}`);
     console.log(`Open http://localhost:${PORT} to start chatting!`);
 });
 
