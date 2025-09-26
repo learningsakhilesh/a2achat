@@ -40,7 +40,11 @@ This app is configured for easy deployment on Render.com:
 
 ## Live Demo
 
-🔗 [Live App](https://your-app-name.onrender.com)
+🔗 [Live App](https://a2achat.onrender.com)
+
+## Quick Deploy
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/learningsakhilesh/a2achat)
 
 ---
 
