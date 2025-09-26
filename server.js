@@ -21,8 +21,13 @@ const MAX_USERS = 2;
 // Serve static files
 app.use(express.static(path.join(__dirname)));
 
-// Serve main page
+// Serve auth page as landing page
 app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'auth.html'));
+});
+
+// Serve chat page
+app.get('/chat', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 

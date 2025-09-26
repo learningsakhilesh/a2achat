@@ -2,13 +2,32 @@ class InstagramChat {
     constructor() {
         this.socket = null;
         this.username = '';
+        this.currentUser = null;
         this.otherUser = '';
         this.isTyping = false;
         this.typingTimeout = null;
 
+        this.checkAuthentication();
         this.initializeElements();
         this.setupEventListeners();
-        this.showLoginModal();
+
+        if (this.currentUser) {
+            this.username = this.currentUser.username;
+            this.connectToServer();
+        } else {
+            this.showLoginModal();
+        }
+    }
+
+    checkAuthentication() {
+        const userData = localStorage.getItem('a2achat_currentUser');
+        if (userData) {
+            this.currentUser = JSON.parse(userData);
+        } else {
+            // Redirect to auth page if not logged in
+            window.location.href = '/';
+            return;
+        }
     }
 
     initializeElements() {
@@ -25,11 +44,15 @@ class InstagramChat {
     }
 
     setupEventListeners() {
-        // Join chat
-        this.joinBtn.addEventListener('click', () => this.joinChat());
-        this.usernameInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') this.joinChat();
-        });
+        // Join chat (for backward compatibility)
+        if (this.joinBtn) {
+            this.joinBtn.addEventListener('click', () => this.joinChat());
+        }
+        if (this.usernameInput) {
+            this.usernameInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') this.joinChat();
+            });
+        }
 
         // Send message
         this.sendBtn.addEventListener('click', () => this.sendMessage());
@@ -43,6 +66,61 @@ class InstagramChat {
         // Typing indicator
         this.messageInput.addEventListener('input', () => this.handleTyping());
         this.messageInput.addEventListener('blur', () => this.stopTyping());
+
+        // User menu
+        const userMenuBtn = document.getElementById('userMenuBtn');
+        const userDropdown = document.getElementById('userDropdown');
+
+        if (userMenuBtn && userDropdown) {
+            userMenuBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                userDropdown.classList.toggle('hidden');
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', () => {
+                userDropdown.classList.add('hidden');
+            });
+        }
+
+        // Update user info in header
+        this.updateUserInfo();
+    }
+
+    updateUserInfo() {
+        if (this.currentUser) {
+            // Update current user avatar and info
+            const currentUserAvatar = document.getElementById('currentUserAvatar');
+            const dropdownAvatar = document.getElementById('dropdownAvatar');
+            const dropdownName = document.getElementById('dropdownName');
+            const dropdownUsername = document.getElementById('dropdownUsername');
+
+            if (currentUserAvatar) {
+                currentUserAvatar.src = this.currentUser.avatar || `https://via.placeholder.com/40x40/${this.generateAvatarColor(this.currentUser.username)}/ffffff?text=${this.currentUser.username.charAt(0).toUpperCase()}`;
+            }
+            if (dropdownAvatar) {
+                dropdownAvatar.src = this.currentUser.avatar || `https://via.placeholder.com/40x40/${this.generateAvatarColor(this.currentUser.username)}/ffffff?text=${this.currentUser.username.charAt(0).toUpperCase()}`;
+            }
+            if (dropdownName) {
+                dropdownName.textContent = this.currentUser.fullName || this.currentUser.username;
+            }
+            if (dropdownUsername) {
+                dropdownUsername.textContent = `@${this.currentUser.username}`;
+            }
+        }
+    }
+
+    logout() {
+        // Clear user data
+        localStorage.removeItem('a2achat_currentUser');
+
+        // Disconnect socket
+        if (this.socket) {
+            this.socket.disconnect();
+        }
+
+        // Redirect to auth page
+        window.location.href = '/';
     }
 
     showLoginModal() {
@@ -301,6 +379,7 @@ class InstagramChat {
 }
 
 // Initialize the chat when DOM is loaded
+let chat;
 document.addEventListener('DOMContentLoaded', () => {
-    new InstagramChat();
+    chat = new InstagramChat();
 });
