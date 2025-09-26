@@ -13,6 +13,11 @@ class InstagramChat {
 
         if (this.currentUser) {
             this.username = this.currentUser.username;
+            console.log('Connecting to server with username:', this.username);
+            // Hide login modal since user is authenticated
+            if (this.loginModal) {
+                this.loginModal.style.display = 'none';
+            }
             this.connectToServer();
         } else {
             this.showLoginModal();
@@ -23,8 +28,10 @@ class InstagramChat {
         const userData = localStorage.getItem('a2achat_currentUser');
         if (userData) {
             this.currentUser = JSON.parse(userData);
+            console.log('User authenticated:', this.currentUser);
         } else {
             // Redirect to auth page if not logged in
+            console.log('No authentication found, redirecting...');
             window.location.href = '/';
             return;
         }
@@ -145,9 +152,13 @@ class InstagramChat {
     }
 
     connectToServer() {
+        console.log('Attempting to connect to server...');
         this.socket = io();
 
-        this.socket.emit('join', this.username);
+        this.socket.on('connect', () => {
+            console.log('Connected to server, joining with username:', this.username);
+            this.socket.emit('join', this.username);
+        });
 
         this.socket.on('userJoined', (data) => {
             this.handleUserJoined(data);
@@ -179,10 +190,6 @@ class InstagramChat {
 
         this.socket.on('disconnect', () => {
             this.showNotification('Disconnected from server');
-        });
-
-        this.socket.on('connect', () => {
-            this.showNotification('Connected to chat');
         });
     }
 
