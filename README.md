@@ -40,7 +40,7 @@ This app is configured for easy deployment on Render.com:
 
 ## Live Demo
 
-🔗 [Live App](https://a2achat.onrender.com)
+🔗 [Live App](https://a2achat.onrender.com) - **Now with Authentication!**
 
 ## Quick Deploy
 
